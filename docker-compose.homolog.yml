@@ -1,0 +1,13 @@
+# ── Homologação — Aplicação Pública (rede isolada / DMZ) ─────────────────────
+services:
+  publica-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONFIG: homologacao
+    image: indisponibilidade-publica-web:homolog
+    container_name: indisponibilidade-publica-web-homolog
+    ports:
+      - "${PUBLICA_WEB_PORT:-8092}:80"
+    restart: unless-stopped

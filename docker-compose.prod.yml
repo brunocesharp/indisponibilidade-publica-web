@@ -1,0 +1,13 @@
+# ── Produção — Aplicação Pública (rede isolada / DMZ) ────────────────────────
+services:
+  publica-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONFIG: producao
+    image: indisponibilidade-publica-web:prod
+    container_name: indisponibilidade-publica-web-prod
+    ports:
+      - "${PUBLICA_WEB_PORT:-80}:80"
+    restart: always
