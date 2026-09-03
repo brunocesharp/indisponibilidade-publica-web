@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
-import { TceFooterComponent } from '@tce/tce-components';
-import { TceHttpLoadingService } from '@tce/tce-http';
+
+import { LoadingService } from './core/services/loading.service';
 
 /**
  * Shell da Aplicação Pública: navegação simples entre Tempo Real e Consulta
@@ -11,7 +11,7 @@ import { TceHttpLoadingService } from '@tce/tce-http';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe, TceFooterComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, AsyncPipe],
   template: `
     <header class="flex items-center justify-between p-4 border-b">
       <h1 class="text-xl font-semibold">Disponibilidade dos Sistemas — TCE-MG</h1>
@@ -22,17 +22,24 @@ import { TceHttpLoadingService } from '@tce/tce-http';
     </header>
 
     @if (loading$ | async) {
-      <div class="loading-overlay" aria-busy="true">Carregando…</div>
+      <div
+        class="fixed inset-x-0 top-0 z-50 bg-red-700 text-white text-center text-sm py-1"
+        aria-busy="true"
+      >
+        Carregando…
+      </div>
     }
 
     <main class="p-4">
       <router-outlet></router-outlet>
     </main>
 
-    <tce-footer></tce-footer>
+    <footer class="p-4 border-t text-center text-xs text-neutral-500">
+      Tribunal de Contas do Estado de Minas Gerais — TCE-MG
+    </footer>
   `,
 })
 export class AppComponent {
-  private readonly loadingService = inject(TceHttpLoadingService);
+  private readonly loadingService = inject(LoadingService);
   loading$ = this.loadingService.getLoad();
 }

@@ -11,15 +11,13 @@
     "test": "ng test"
   },
   "dependencies": {
+    "@angular/animations": "^20.0.0",
     "@angular/common": "^20.0.0",
     "@angular/compiler": "^20.0.0",
     "@angular/core": "^20.0.0",
     "@angular/forms": "^20.0.0",
     "@angular/platform-browser": "^20.0.0",
     "@angular/router": "^20.0.0",
-    "@tce/tce-components": "^1.0.0",
-    "@tce/tce-http": "^1.0.0",
-    "@tce/tce-utils": "^1.0.0",
     "primeng": "^20.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.7.0",
