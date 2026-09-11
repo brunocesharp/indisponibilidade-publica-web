@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
   nome: 'homologacao',
-  apiUrl: 'https://disponibilidade-hml.tce.mg.gov.br/api/publico',
+  apiUrl: 'https://winiisdt02hml.tce.mg.gov.br/indisponibilidade/hml/api/publico',
   atualizacaoAutomaticaSegundos: 60,
 };
