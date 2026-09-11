@@ -1,21 +1,21 @@
 import { TestBed } from '@angular/core/testing';
-import { TceHttpService } from '@tce/tce-http';
 
 import { environment } from '../../../environments/environment';
 import { AutenticacaoService } from './autenticacao.service';
+import { HttpApiService } from './http-api.service';
 
 describe('AutenticacaoService', () => {
   let service: AutenticacaoService;
-  let http: jasmine.SpyObj<TceHttpService>;
+  let http: jasmine.SpyObj<HttpApiService>;
   const base = environment.apiUrl;
 
   beforeEach(() => {
-    const spy = jasmine.createSpyObj<TceHttpService>('TceHttpService', ['get$']);
+    const spy = jasmine.createSpyObj<HttpApiService>('HttpApiService', ['get$']);
     TestBed.configureTestingModule({
-      providers: [AutenticacaoService, { provide: TceHttpService, useValue: spy }],
+      providers: [AutenticacaoService, { provide: HttpApiService, useValue: spy }],
     });
     service = TestBed.inject(AutenticacaoService);
-    http = TestBed.inject(TceHttpService) as jasmine.SpyObj<TceHttpService>;
+    http = TestBed.inject(HttpApiService) as jasmine.SpyObj<HttpApiService>;
   });
 
   it('autenticar deve chamar GET /relatorios/autenticar com o filtro de verificador', () => {

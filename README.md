@@ -2,7 +2,7 @@
 
 Aplicação Pública do **Monitoramento de Indisponibilidade** (TCE-MG) — Angular 20 standalone, PrimeNG 20, Tailwind 4.
 
-Publicada em **rede isolada (DMZ)**, com **acesso sem autenticação** (não referencia `@tce/tce-proxy`). Telas:
+Publicada em **rede isolada (DMZ)**, com **acesso sem autenticação** (sem guard, login ou proxy de sessão). Telas:
 
 - `/tempo-real` — acompanhamento em tempo real (atualização automática a cada 1 min + botão manual);
 - `/consulta` — consulta do relatório por limiar (d-1) com download de PDF.

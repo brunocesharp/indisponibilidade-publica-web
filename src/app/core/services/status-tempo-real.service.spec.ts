@@ -1,20 +1,20 @@
 import { TestBed } from '@angular/core/testing';
-import { TceHttpService } from '@tce/tce-http';
 
 import { environment } from '../../../environments/environment';
 import { StatusTempoRealService } from './status-tempo-real.service';
+import { HttpApiService } from './http-api.service';
 
 describe('StatusTempoRealService', () => {
   let service: StatusTempoRealService;
-  let http: jasmine.SpyObj<TceHttpService>;
+  let http: jasmine.SpyObj<HttpApiService>;
 
   beforeEach(() => {
-    const spy = jasmine.createSpyObj<TceHttpService>('TceHttpService', ['get$']);
+    const spy = jasmine.createSpyObj<HttpApiService>('HttpApiService', ['get$']);
     TestBed.configureTestingModule({
-      providers: [StatusTempoRealService, { provide: TceHttpService, useValue: spy }],
+      providers: [StatusTempoRealService, { provide: HttpApiService, useValue: spy }],
     });
     service = TestBed.inject(StatusTempoRealService);
-    http = TestBed.inject(TceHttpService) as jasmine.SpyObj<TceHttpService>;
+    http = TestBed.inject(HttpApiService) as jasmine.SpyObj<HttpApiService>;
   });
 
   it('obterStatus deve chamar GET /status sem loading global', () => {
