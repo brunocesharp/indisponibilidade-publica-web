@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { TceHttpService } from '@tce/tce-http';
 
 import { environment } from '../../../environments/environment';
 import { StatusTempoReal } from '../models/status.model';
+import { HttpApiService } from './http-api.service';
 
 /**
  * Serviço de leitura do estado atual das aplicações (página de tempo real).
@@ -10,7 +10,7 @@ import { StatusTempoReal } from '../models/status.model';
  */
 @Injectable({ providedIn: 'root' })
 export class StatusTempoRealService {
-  private readonly http = inject(TceHttpService);
+  private readonly http = inject(HttpApiService);
   private readonly baseUrl = environment.apiUrl;
 
   /** Intervalo de atualização automática (ms), configurável por ambiente. */

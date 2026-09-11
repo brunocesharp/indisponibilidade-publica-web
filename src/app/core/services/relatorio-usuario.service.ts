@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
-import { TceHttpService } from '@tce/tce-http';
 
 import { environment } from '../../../environments/environment';
 import { ConsultaRelatorioLimiar } from '../models/relatorio.model';
+import { HttpApiService } from './http-api.service';
 
 /**
  * Serviço de consulta pública do relatório por limiar (usuário). GET anônimo.
@@ -10,7 +10,7 @@ import { ConsultaRelatorioLimiar } from '../models/relatorio.model';
  */
 @Injectable({ providedIn: 'root' })
 export class RelatorioUsuarioService {
-  private readonly http = inject(TceHttpService);
+  private readonly http = inject(HttpApiService);
   private readonly baseUrl = environment.apiUrl;
 
   /** Consulta o relatório por limiar de uma data (formato yyyy-MM-dd). */

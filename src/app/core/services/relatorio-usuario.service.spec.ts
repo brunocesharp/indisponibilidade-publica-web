@@ -1,21 +1,21 @@
 import { TestBed } from '@angular/core/testing';
-import { TceHttpService } from '@tce/tce-http';
 
 import { environment } from '../../../environments/environment';
 import { RelatorioUsuarioService } from './relatorio-usuario.service';
+import { HttpApiService } from './http-api.service';
 
 describe('RelatorioUsuarioService', () => {
   let service: RelatorioUsuarioService;
-  let http: jasmine.SpyObj<TceHttpService>;
+  let http: jasmine.SpyObj<HttpApiService>;
   const base = environment.apiUrl;
 
   beforeEach(() => {
-    const spy = jasmine.createSpyObj<TceHttpService>('TceHttpService', ['get$']);
+    const spy = jasmine.createSpyObj<HttpApiService>('HttpApiService', ['get$']);
     TestBed.configureTestingModule({
-      providers: [RelatorioUsuarioService, { provide: TceHttpService, useValue: spy }],
+      providers: [RelatorioUsuarioService, { provide: HttpApiService, useValue: spy }],
     });
     service = TestBed.inject(RelatorioUsuarioService);
-    http = TestBed.inject(TceHttpService) as jasmine.SpyObj<TceHttpService>;
+    http = TestBed.inject(HttpApiService) as jasmine.SpyObj<HttpApiService>;
   });
 
   it('consultar deve chamar GET /relatorios com o filtro de data', () => {
