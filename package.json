@@ -1,13 +1,15 @@
 {
-  "name": "aplicacao-publica",
+  "name": "monitoramento-indisponibilidade-publica",
   "version": "0.1.0",
   "private": true,
   "description": "Aplicação Pública — Monitoramento de Indisponibilidade (TCE-MG). Rede isolada (DMZ), SEM autenticação, deploy próprio.",
   "scripts": {
     "start": "ng serve --port 4201",
     "build": "ng build",
-    "build:homolog": "ng build --configuration homologacao",
-    "build:prod": "ng build --configuration producao",
+    "build:dev": "ng build --configuration dev",
+    "build:qa": "ng build --configuration qa",
+    "build:hml": "ng build --configuration hml",
+    "build:prod": "ng build --configuration prod",
     "test": "ng test"
   },
   "dependencies": {
@@ -17,9 +19,6 @@
     "@angular/forms": "^20.0.0",
     "@angular/platform-browser": "^20.0.0",
     "@angular/router": "^20.0.0",
-    "@tce/tce-components": "^1.0.0",
-    "@tce/tce-http": "^1.0.0",
-    "@tce/tce-utils": "^1.0.0",
     "primeng": "^20.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.7.0",

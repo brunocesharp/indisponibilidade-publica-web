@@ -3,8 +3,6 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { provideRouter } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
-import { provideTceHttpErrorInterceptor } from '@tce/tce-http';
-import { provideTceCommonPipes, provideTceCommonServices } from '@tce/tce-utils';
 
 import { routes } from './app.routes';
 import { environment } from '../environments/environment';

@@ -1,0 +1,61 @@
+# =================================================================
+# = IMPORTS
+# =================================================================
+include:
+  - project: devsecops/templates_ci/templates_deploy
+    file: /ci-template.yml
+    ref: v1.0.0-d
+
+# =================================================================
+# = VARIÁVEIS GERAIS
+# =================================================================
+
+variables:
+  SISTEMA: 'indisponibilidade'
+  APP_TECHNOLOGY: 'angular'
+  NODE_IMAGE: 'node:22.18.0-bookworm'
+  ANGULAR_VERSION: 'angular/cli@20.3.8'
+  DEPLOY_METHOD: 'apache'
+
+# =================================================================
+# = FLUXOO
+# =================================================================
+
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "hml"'
+      variables:
+        TENABLE_URL: 'https://indisponibilidade-hml.tce.mg.gov.br/'
+        BUILD_COMMAND: 'build:hml'
+        DEPLOY_RUNNER: 'lnxwebpce01hml'
+        ANGULAR_DEPLOYS: >
+          [
+            {
+            "DEPLOY_PATH": "Deployments/HML/browser",
+            "TARGET_PATH": "/var/www/indisponibilidade-hml"
+            }
+          ]
+    - if: '$CI_COMMIT_BRANCH == "qa"'
+      variables:
+        TENABLE_URL: 'https://indisponibilidade-qa.tce.mg.gov.br/'
+        BUILD_COMMAND: 'build:qa'
+        DEPLOY_RUNNER: 'lnxwebpce01hml'
+        ANGULAR_DEPLOYS: >
+          [
+            {
+            "DEPLOY_PATH": "Deployments/QA/browser",
+            "TARGET_PATH": "/var/www/indisponibilidade-qa"
+            }
+          ]
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      variables:
+        TENABLE_URL: 'https://indisponibilidade-dev.tce.mg.gov.br/'
+        BUILD_COMMAND: 'build:dev'
+        DEPLOY_RUNNER: 'lnxwebpce01hml'
+        ANGULAR_DEPLOYS: >
+          [
+            {
+            "DEPLOY_PATH": "Deployments/DEV/browser",
+            "TARGET_PATH": "/var/www/indisponibilidade-dev"
+            }
+          ]
