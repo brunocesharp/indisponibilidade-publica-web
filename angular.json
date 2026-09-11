@@ -3,14 +3,19 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "aplicacao-publica": {
+    "monitoramento-indisponibilidade-publica": {
       "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
         "build": {
-          "builder": "@angular/build:application",
+           "builder": "@angular/build:application",
           "options": {
             "outputPath": "dist/aplicacao-publica",
             "index": "src/index.html",
@@ -21,16 +26,7 @@
             "styles": ["src/styles.css"]
           },
           "configurations": {
-            "homologacao": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.homolog.ts"
-                }
-              ],
-              "outputHashing": "all"
-            },
-            "producao": {
+            "prod": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -38,34 +34,89 @@
                 }
               ],
               "budgets": [
-                { "type": "initial", "maximumWarning": "1MB", "maximumError": "2MB" }
+                {
+                  "type": "initial",
+                  "maximumWarning": "3MB",
+                  "maximumError": "5MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "8kB",
+                  "maximumError": "16kB"
+                }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "optimization": true,
+              "aot": true,
+              "outputPath": "Deployments/PROD/"
             },
-            "development": {
+            "hml": {
+              "aot": true,
+              "outputPath": "Deployments/HML/",
+              "baseHref": "/",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.hml.ts"
+                }
+              ]
+            },
+            "dev": {
+              "aot": true,
+              "outputPath": "Deployments/DEV/",
+              "baseHref": "/",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.dev.ts"
+                }
+              ]
+            },
+            "qa": {
+              "aot": true,
+              "outputPath": "Deployments/QA/",
+              "baseHref": "/",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.qa.ts"
+                }
+              ]
+            },
+            "local": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true
             }
           },
-          "defaultConfiguration": "producao"
+          "defaultConfiguration": "prod"
         },
         "serve": {
           "builder": "@angular/build:dev-server",
           "configurations": {
-            "development": { "buildTarget": "aplicacao-publica:build:development" }
+            "prod": { "buildTarget": "monitoramento-indisponibilidade:build:prod" },
+            "dev":  { "buildTarget": "monitoramento-indisponibilidade:build:dev" },
+            "qa":   { "buildTarget": "monitoramento-indisponibilidade:build:qa" },
+            "hml":  { "buildTarget": "monitoramento-indisponibilidade:build:hml" },
+            "local":{ "buildTarget": "monitoramento-indisponibilidade:build:local" }
           },
-          "defaultConfiguration": "development"
+          "defaultConfiguration": "local"
         },
-        "test": {
-          "builder": "@angular/build:karma",
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
           "options": {
             "polyfills": ["zone.js", "zone.js/testing"],
-            "tsConfig": "tsconfig.spec.json",
-            "styles": ["src/styles.css"]
+            "lintFilePatterns": ["src/**/*.ts", "src/**/*.html"]
           }
         }
       }
     }
+  },
+  "cli": {
+    "schematicCollections": ["angular-eslint"],
+    "analytics": false
   }
 }
