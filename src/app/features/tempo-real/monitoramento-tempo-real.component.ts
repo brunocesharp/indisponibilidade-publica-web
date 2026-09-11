@@ -39,6 +39,12 @@ import { StatusTempoRealComponent } from './status-tempo-real.component';
             {{ carregando ? 'Atualizando…' : 'Atualizar' }}
           </button>
           <a
+            routerLink="/autenticar"
+            class="px-4 py-2 rounded-md bg-neutral-100 hover:bg-neutral-200 text-sm font-medium"
+          >
+            Validar autenticidade
+          </a>
+          <a
             routerLink="/consulta"
             class="px-4 py-2 rounded-md bg-red-700 text-white text-sm font-medium hover:bg-red-800"
           >
