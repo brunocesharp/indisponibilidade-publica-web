@@ -9,9 +9,8 @@ import { RelatorioViewComponent } from './relatorio-view.component';
 
 /**
  * Componente inteligente (Smart) da consulta pública do relatório por limiar (F6). Seletor de data,
- * estado inicial (nenhuma consulta ainda), mensagens de ausência (Cenário 2) e de data
- * inválida/futura (Cenário 3), e exibição do relatório com download de PDF (Cenário 6). Acesso
- * público, sem autenticação. Navega de volta ao tempo real.
+ * mensagens de ausência (Cenário 2) e de data inválida/futura (Cenário 3), e exibição do relatório
+ * com download de PDF (Cenário 6). Acesso público, sem autenticação. Navega de volta ao tempo real.
  */
 @Component({
   selector: 'app-consulta-relatorio',
@@ -19,61 +18,40 @@ import { RelatorioViewComponent } from './relatorio-view.component';
   imports: [CommonModule, FormsModule, RouterLink, RelatorioViewComponent],
   template: `
     <section class="flex flex-col gap-5">
-      <div>
-        <h1 class="text-[22px] font-bold text-neutral-900 tracking-tight">Relatório de Limiar</h1>
-        <p class="text-[13px] text-neutral-500 mt-1">
-          Sistemas que ultrapassaram o limiar diário de indisponibilidade. Disponível a partir do dia seguinte (d-1).
-        </p>
+      <header class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 class="text-2xl font-semibold">Consulta de relatórios</h1>
+          <p class="text-sm text-neutral-500">
+            Relatório por limiar de indisponibilidade, disponível a partir do dia seguinte (d-1).
+          </p>
+        </div>
+        <a routerLink="/tempo-real" class="px-4 py-2 rounded-md bg-neutral-100 hover:bg-neutral-200 text-sm font-medium">
+          Voltar ao tempo real
+        </a>
+      </header>
+
+      <div class="rounded-lg border border-neutral-200 bg-white p-5 flex flex-wrap items-end gap-3">
+        <div class="flex flex-col gap-1">
+          <label for="data" class="text-sm font-medium">Data do relatório</label>
+          <input
+            id="data"
+            type="date"
+            [(ngModel)]="data"
+            [max]="maxData"
+            class="border border-neutral-300 rounded-md px-3 py-2"
+          />
+        </div>
+        <button
+          type="button"
+          class="px-4 py-2 rounded-md bg-red-700 text-white text-sm font-medium hover:bg-red-800 disabled:opacity-50"
+          [disabled]="!data || carregando"
+          (click)="consultar()"
+        >
+          {{ carregando ? 'Consultando…' : 'Consultar' }}
+        </button>
       </div>
 
-      <div class="bg-white border border-neutral-200 rounded-xl shadow-sm p-6">
-        <div class="text-sm font-semibold text-neutral-800 mb-4">Selecione uma data para consultar</div>
-        <div class="flex gap-3 items-end flex-wrap">
-          <div class="flex flex-col gap-1.5">
-            <label for="data" class="text-xs font-semibold text-neutral-700">Data de referência</label>
-            <input
-              id="data"
-              type="date"
-              [(ngModel)]="data"
-              [max]="maxData"
-              class="border border-neutral-300 rounded-lg px-3 py-2.5 text-sm text-neutral-800 outline-none focus:border-blue-700 focus:ring-4 focus:ring-blue-700/10"
-            />
-          </div>
-          <button
-            type="button"
-            class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[13px] font-semibold text-white bg-blue-700 hover:bg-blue-800 disabled:opacity-50 transition-colors"
-            [disabled]="!data || carregando"
-            (click)="consultar()"
-          >
-            <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            {{ carregando ? 'Consultando…' : 'Consultar' }}
-          </button>
-          <a
-            routerLink="/tempo-real"
-            class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[13px] font-semibold text-neutral-700 bg-white border border-neutral-300 hover:bg-neutral-50 transition-colors"
-          >
-            <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Voltar ao tempo real
-          </a>
-        </div>
-      </div>
-
-      @if (!consulta) {
-        <div class="bg-white border border-neutral-200 rounded-xl shadow-sm py-14 px-6 text-center">
-          <div class="text-4xl mb-3">📅</div>
-          <div class="text-[15px] font-semibold text-neutral-700 mb-1.5">Selecione uma data para consultar</div>
-          <div class="text-[13px] text-neutral-400">Os relatórios ficam disponíveis a partir do dia seguinte ao ocorrido.</div>
-        </div>
-      } @else {
+      @if (consulta) {
         @switch (consulta.resultado) {
           @case ('Disponivel') {
             @if (consulta.relatorio) {
@@ -81,16 +59,12 @@ import { RelatorioViewComponent } from './relatorio-view.component';
             }
           }
           @case ('SemIndisponibilidade') {
-            <div class="bg-white border border-neutral-200 rounded-xl shadow-sm py-14 px-6 text-center">
-              <div class="text-4xl mb-3">✅</div>
-              <div class="text-[15px] font-semibold text-neutral-700 mb-1.5">Nenhum sistema atingiu o limiar</div>
-              <div class="text-[13px] text-neutral-400">
-                Nenhum sistema acumulou indisponibilidade acima do limiar na data selecionada.
-              </div>
-            </div>
+            <p class="rounded-md bg-green-50 text-green-800 px-4 py-3">
+              Não houve indisponibilidades registradas na data consultada.
+            </p>
           }
           @case ('DataInvalida') {
-            <p class="rounded-xl bg-amber-50 text-amber-800 border border-amber-200 px-4 py-3 text-sm">
+            <p class="rounded-md bg-amber-50 text-amber-800 px-4 py-3">
               Não há relatório disponível para a data selecionada. Os relatórios ficam disponíveis a partir do dia seguinte.
             </p>
           }
