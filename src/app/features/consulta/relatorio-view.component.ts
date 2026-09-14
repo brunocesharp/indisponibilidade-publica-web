@@ -35,11 +35,24 @@ import { RelatorioLimiar } from '../../core/models/relatorio.model';
         }
       </div>
 
-      @for (sistema of relatorio.sistemas; track sistema.sigla) {
-        <div class="rounded-lg border border-neutral-200 overflow-hidden">
-          <div class="bg-neutral-50 px-4 py-2 font-semibold text-neutral-800">
-            {{ sistema.sigla }} — {{ sistema.nome }}
-          </div>
+      @for (sistema of relatorio.sistemas; track sistema.sigla; let primeiro = $first) {
+        <details class="group rounded-lg border border-neutral-200 overflow-hidden" [open]="primeiro">
+          <summary
+            class="flex items-center justify-between gap-3 bg-neutral-50 px-4 py-2 font-semibold text-neutral-800 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden"
+          >
+            <span>{{ sistema.sigla }} — {{ sistema.nome }}</span>
+            <span class="flex items-center gap-2 text-sm font-normal text-neutral-600">
+              <span>{{ sistema.totalMinutos }} min</span>
+              <svg
+                class="w-4 h-4 shrink-0 transition-transform group-open:rotate-180"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.06l3.71-3.83a.75.75 0 1 1 1.08 1.04l-4.25 4.39a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
+              </svg>
+            </span>
+          </summary>
           <table class="w-full text-sm">
             <thead class="bg-neutral-100 text-neutral-600">
               <tr>
@@ -62,7 +75,7 @@ import { RelatorioLimiar } from '../../core/models/relatorio.model';
               </tr>
             </tbody>
           </table>
-        </div>
+        </details>
       }
     </div>
   `,
