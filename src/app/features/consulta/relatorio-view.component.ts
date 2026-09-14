@@ -35,8 +35,8 @@ import { RelatorioLimiar } from '../../core/models/relatorio.model';
         }
       </div>
 
-      @for (sistema of relatorio.sistemas; track sistema.sigla; let primeiro = $first) {
-        <details class="group rounded-lg border border-neutral-200 overflow-hidden" [open]="primeiro">
+      @for (sistema of relatorio.sistemas; track sistema.sigla) {
+        <details class="group rounded-lg border border-neutral-200 overflow-hidden">
           <summary
             class="flex items-center justify-between gap-3 bg-neutral-50 px-4 py-2 font-semibold text-neutral-800 cursor-pointer select-none list-none [&::-webkit-details-marker]:hidden"
           >
