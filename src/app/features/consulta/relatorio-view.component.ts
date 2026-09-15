@@ -45,19 +45,24 @@ import { RelatorioLimiar } from '../../core/models/relatorio.model';
             (click)="toggleSistema(sistema.sigla)"
           >
             <span>{{ sistema.sigla }} — {{ sistema.nome }}</span>
-            <svg
-              class="h-4 w-4 shrink-0 transition-transform"
-              [class.rotate-180]="isExpandido(sistema.sigla)"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                clip-rule="evenodd"
-              />
-            </svg>
+            <span class="flex items-center gap-3 shrink-0">
+              <span class="text-sm font-semibold text-red-700">
+                Indisponibilidade total: {{ sistema.totalMinutos }} min
+              </span>
+              <svg
+                class="h-4 w-4 shrink-0 transition-transform"
+                [class.rotate-180]="isExpandido(sistema.sigla)"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </span>
           </button>
           @if (isExpandido(sistema.sigla)) {
             <table [id]="'sistema-' + sistema.sigla" class="w-full text-sm">
@@ -76,10 +81,6 @@ import { RelatorioLimiar } from '../../core/models/relatorio.model';
                     <td class="px-4 py-2">{{ p.duracaoMinutos != null ? p.duracaoMinutos + ' min' : '—' }}</td>
                   </tr>
                 }
-                <tr class="border-t border-neutral-200 bg-neutral-50 font-semibold">
-                  <td class="px-4 py-2" colspan="2">Indisponibilidade total do dia</td>
-                  <td class="px-4 py-2 text-red-700">{{ sistema.totalMinutos }} min</td>
-                </tr>
               </tbody>
             </table>
           }
