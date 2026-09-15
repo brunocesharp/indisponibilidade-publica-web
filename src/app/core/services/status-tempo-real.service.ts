@@ -16,7 +16,7 @@ export class StatusTempoRealService {
   /** Intervalo de atualização automática (ms), configurável por ambiente. */
   readonly intervaloAtualizacaoMs = (environment.atualizacaoAutomaticaSegundos ?? 60) * 1000;
 
-  obterStatus(): Promise<StatusTempoReal | null> {
+  obterStatus(): Promise<StatusTempoReal> {
     // showLoading=false: o refresh automático não deve piscar o loading global.
     return this.http.get$<StatusTempoReal>(`${this.baseUrl}/status`, { showLoading: false });
   }

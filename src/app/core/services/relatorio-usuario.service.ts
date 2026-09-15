@@ -14,7 +14,7 @@ export class RelatorioUsuarioService {
   private readonly baseUrl = environment.apiUrl;
 
   /** Consulta o relatório por limiar de uma data (formato yyyy-MM-dd). */
-  consultar(data: string): Promise<ConsultaRelatorioLimiar | null> {
+  consultar(data: string): Promise<ConsultaRelatorioLimiar> {
     return this.http.get$<ConsultaRelatorioLimiar>(`${this.baseUrl}/relatorios`, { filter: { data } });
   }
 

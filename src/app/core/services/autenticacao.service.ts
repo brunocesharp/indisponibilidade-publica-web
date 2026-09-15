@@ -14,7 +14,7 @@ export class AutenticacaoService {
   private readonly baseUrl = environment.apiUrl;
 
   /** Consulta o relatório de limiar autenticável pelo código verificador informado. */
-  autenticar(verificador: string): Promise<ConsultaAutenticacao | null> {
+  autenticar(verificador: string): Promise<ConsultaAutenticacao> {
     return this.http.get$<ConsultaAutenticacao>(`${this.baseUrl}/relatorios/autenticar`, {
       filter: { verificador },
     });

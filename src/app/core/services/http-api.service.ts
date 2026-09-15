@@ -18,7 +18,7 @@ export class HttpApiService {
   private readonly http = inject(HttpClient);
   private readonly loading = inject(HttpLoadingService);
 
-  get$<T>(url: string, options?: HttpGetOptions): Promise<T | null> {
+  get$<T>(url: string, options?: HttpGetOptions): Promise<T> {
     const mostrarLoading = options?.showLoading !== false;
     let params = new HttpParams();
     for (const [chave, valor] of Object.entries(options?.filter ?? {})) {
@@ -39,6 +39,6 @@ export class HttpApiService {
           }
         }),
       ),
-    ).catch(() => null);
+    );
   }
 }

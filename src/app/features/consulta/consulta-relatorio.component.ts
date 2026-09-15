@@ -51,7 +51,9 @@ import { RelatorioViewComponent } from './relatorio-view.component';
         </button>
       </div>
 
-      @if (consulta) {
+      @if (erro) {
+        <p class="text-red-600">Não foi possível consultar o relatório. Tente novamente.</p>
+      } @else if (consulta) {
         @switch (consulta.resultado) {
           @case ('Disponivel') {
             @if (consulta.relatorio) {
@@ -81,19 +83,23 @@ export class ConsultaRelatorioComponent {
 
   data = '';
   carregando = false;
+  erro = false;
   consulta: ConsultaRelatorioLimiar | null = null;
   pdfUrl: string | null = null;
 
   async consultar(): Promise<void> {
     if (!this.data) return;
     this.carregando = true;
+    this.erro = false;
     this.consulta = null;
     this.pdfUrl = null;
     try {
       this.consulta = await this.service.consultar(this.data);
-      if (this.consulta?.resultado === 'Disponivel') {
+      if (this.consulta.resultado === 'Disponivel') {
         this.pdfUrl = this.service.urlPdf(this.data);
       }
+    } catch {
+      this.erro = true;
     } finally {
       this.carregando = false;
     }
