@@ -2,16 +2,12 @@
 
 import { RelatorioSistema } from './relatorio.model';
 
-/** Desfecho da autenticação, alinhado ao enum do backend (serializado como string). */
-export type ResultadoAutenticacao = 'Autentico' | 'NaoLocalizado';
-
-/** Espelha `RelatorioAutenticacaoDto`: sistemas do relatório de limiar e indisponibilidade total do dia. */
+/**
+ * Espelha `RelatorioAutenticacaoDto`: corpo retornado por GET /relatorios/autenticar quando o
+ * código verificador é autêntico (HTTP 200). Código inválido/inexistente/tipo A responde 404;
+ * excesso de tentativas responde 429 (RN-8.7) — sem envelope de resultado no corpo.
+ */
 export interface AutenticacaoRelatorio {
   dataReferencia: string;
   sistemas: RelatorioSistema[];
-}
-
-export interface ConsultaAutenticacao {
-  resultado: ResultadoAutenticacao;
-  relatorio: AutenticacaoRelatorio | null;
 }

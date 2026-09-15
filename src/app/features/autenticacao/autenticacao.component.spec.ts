@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 
-import { ConsultaAutenticacao } from '../../core/models/autenticacao.model';
+import { AutenticacaoRelatorio } from '../../core/models/autenticacao.model';
 import { AutenticacaoService } from '../../core/services/autenticacao.service';
 import { RelatorioUsuarioService } from '../../core/services/relatorio-usuario.service';
 import { AutenticacaoComponent } from './autenticacao.component';
@@ -33,25 +33,21 @@ describe('AutenticacaoComponent', () => {
 
   it('preenche e autentica automaticamente a partir da querystring do QR Code, ignorando "usuario"', async () => {
     criar({ verificador: '0000001', usuario: 'ignorado' });
-    const consulta: ConsultaAutenticacao = {
-      resultado: 'Autentico',
-      relatorio: { dataReferencia: '2026-09-10', sistemas: [] },
-    };
-    service.autenticar.and.resolveTo(consulta);
+    const relatorio: AutenticacaoRelatorio = { dataReferencia: '2026-09-10', sistemas: [] };
+    service.autenticar.and.resolveTo(relatorio);
 
     fixture.detectChanges();
     await fixture.whenStable();
 
     expect(component.verificador).toBe('0000001');
     expect(service.autenticar).toHaveBeenCalledWith('0000001');
-    expect(component.resultado?.resultado).toBe('Autentico');
+    expect(component.resultado?.dataReferencia).toBe('2026-09-10');
     expect(relatorioService.urlPdf).toHaveBeenCalledWith('2026-09-10');
     expect(component.pdfUrl).toBe('http://pdf');
   });
 
   it('não autentica quando não há código na querystring nem preenchido manualmente', async () => {
     criar();
-    service.autenticar.and.resolveTo({ resultado: 'NaoLocalizado', relatorio: null });
 
     fixture.detectChanges();
     await fixture.whenStable();
@@ -62,16 +58,17 @@ describe('AutenticacaoComponent', () => {
     expect(service.autenticar).not.toHaveBeenCalled();
   });
 
-  it('exibe "não localizado" para código inválido/inexistente/tipo A', async () => {
+  it('exibe "não localizado" para código inválido/inexistente/tipo A (HTTP 404)', async () => {
     criar();
-    service.autenticar.and.resolveTo({ resultado: 'NaoLocalizado', relatorio: null });
+    service.autenticar.and.rejectWith({ status: 404 });
 
     component.verificador = '9999999';
     await component.autenticar();
 
-    expect(component.resultado?.resultado).toBe('NaoLocalizado');
+    expect(component.naoLocalizado).toBeTrue();
     expect(component.bloqueado).toBeFalse();
     expect(component.erro).toBeFalse();
+    expect(component.resultado).toBeNull();
   });
 
   it('exibe mensagem de bloqueio após excesso de tentativas (HTTP 429)', async () => {
@@ -82,10 +79,11 @@ describe('AutenticacaoComponent', () => {
     await component.autenticar();
 
     expect(component.bloqueado).toBeTrue();
+    expect(component.naoLocalizado).toBeFalse();
     expect(component.erro).toBeFalse();
   });
 
-  it('exibe erro genérico para falhas que não sejam de bloqueio', async () => {
+  it('exibe erro genérico para falhas que não sejam de bloqueio ou não localizado', async () => {
     criar();
     service.autenticar.and.rejectWith({ status: 500 });
 
@@ -94,5 +92,6 @@ describe('AutenticacaoComponent', () => {
 
     expect(component.erro).toBeTrue();
     expect(component.bloqueado).toBeFalse();
+    expect(component.naoLocalizado).toBeFalse();
   });
 });
