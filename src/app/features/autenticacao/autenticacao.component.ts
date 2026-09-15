@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 
 import { ConsultaAutenticacao } from '../../core/models/autenticacao.model';
 import { AutenticacaoService } from '../../core/services/autenticacao.service';
+import { RelatorioUsuarioService } from '../../core/services/relatorio-usuario.service';
 
 /**
  * Componente inteligente (Smart) da validação de autenticidade do relatório por limiar (F8),
@@ -63,9 +64,21 @@ import { AutenticacaoService } from '../../core/services/autenticacao.service';
           @case ('Autentico') {
             @if (resultado.relatorio) {
               <div class="rounded-lg border border-neutral-200 bg-white p-5 flex flex-col gap-4">
-                <p class="rounded-md bg-green-50 text-green-800 px-4 py-3">
-                  Relatório autêntico, referente a {{ resultado.relatorio.dataReferencia | date: 'dd/MM/yyyy' }}.
-                </p>
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                  <p class="rounded-md bg-green-50 text-green-800 px-4 py-3">
+                    Relatório autêntico, referente a {{ resultado.relatorio.dataReferencia | date: 'dd/MM/yyyy' }}.
+                  </p>
+                  @if (pdfUrl) {
+                    <a
+                      [href]="pdfUrl"
+                      target="_blank"
+                      rel="noopener"
+                      class="px-4 py-2 rounded-md bg-red-700 text-white text-sm font-medium hover:bg-red-800"
+                    >
+                      Baixar PDF
+                    </a>
+                  }
+                </div>
                 @for (sistema of resultado.relatorio.sistemas; track sistema.sigla) {
                   <div class="rounded-lg border border-neutral-200 overflow-hidden">
                     <div class="bg-neutral-50 px-4 py-2 font-semibold text-neutral-800">
@@ -110,6 +123,7 @@ import { AutenticacaoService } from '../../core/services/autenticacao.service';
 })
 export class AutenticacaoComponent implements OnInit {
   private readonly service = inject(AutenticacaoService);
+  private readonly relatorioService = inject(RelatorioUsuarioService);
   private readonly route = inject(ActivatedRoute);
 
   verificador = '';
@@ -117,6 +131,7 @@ export class AutenticacaoComponent implements OnInit {
   erro = false;
   bloqueado = false;
   resultado: ConsultaAutenticacao | null = null;
+  pdfUrl: string | null = null;
 
   ngOnInit(): void {
     // Link do QR Code: preenche e autentica automaticamente. O parâmetro "usuario" é ignorado (RN-8.1).
@@ -133,13 +148,29 @@ export class AutenticacaoComponent implements OnInit {
     this.erro = false;
     this.bloqueado = false;
     this.resultado = null;
+    this.pdfUrl = null;
     try {
       this.resultado = await this.service.autenticar(this.verificador);
+      if (this.resultado.resultado === 'Autentico' && this.resultado.relatorio) {
+        this.pdfUrl = this.relatorioService.urlPdf(this.resultado.relatorio.dataReferencia);
+        this.baixarPdfAutomaticamente(this.pdfUrl);
+      }
     } catch (e: unknown) {
       this.bloqueado = (e as { status?: number })?.status === 429;
       this.erro = !this.bloqueado;
     } finally {
       this.carregando = false;
     }
+  }
+
+  /** Dispara o download do PDF assim que o código é validado, sem exigir um segundo clique. */
+  private baixarPdfAutomaticamente(url: string): void {
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   }
 }
